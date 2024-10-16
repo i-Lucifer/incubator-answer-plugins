@@ -21,9 +21,11 @@ package s3
 
 import (
 	"crypto/rand"
+	"embed"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/apache/incubator-answer-plugins/util"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -32,6 +34,9 @@ import (
 	"github.com/apache/incubator-answer-plugins/storage-s3/i18n"
 	"github.com/apache/incubator-answer/plugin"
 )
+
+//go:embed  info.yaml
+var Info embed.FS
 
 const (
 	// 10MB
@@ -63,13 +68,16 @@ func init() {
 }
 
 func (s *Storage) Info() plugin.Info {
+	info := &util.Info{}
+	info.GetInfo(Info)
+
 	return plugin.Info{
 		Name:        plugin.MakeTranslator(i18n.InfoName),
-		SlugName:    "s3_storage",
+		SlugName:    info.SlugName,
 		Description: plugin.MakeTranslator(i18n.InfoDescription),
-		Author:      "answerdev",
-		Version:     "1.2.6",
-		Link:        "https://github.com/apache/incubator-answer-plugins/tree/main/storage-s3",
+		Author:      info.Author,
+		Version:     info.Version,
+		Link:        info.Link,
 	}
 }
 
@@ -78,7 +86,7 @@ func (s *Storage) UploadFile(ctx *plugin.GinContext, source plugin.UploadSource)
 
 	file, err := ctx.FormFile("file")
 	if err != nil {
-		resp.OriginalError = fmt.Errorf("get bucket failed: %v", err)
+		resp.OriginalError = fmt.Errorf("get upload file failed: %v", err)
 		resp.DisplayErrorMsg = plugin.MakeTranslator(i18n.ErrFileNotFound)
 		return resp
 	}
@@ -106,7 +114,7 @@ func (s *Storage) UploadFile(ctx *plugin.GinContext, source plugin.UploadSource)
 	objectKey := s.createObjectKey(file.Filename, source)
 	err = s.Client.PutObject(objectKey, strings.ToLower(filepath.Ext(file.Filename)), openFile)
 	if err != nil {
-		resp.OriginalError = fmt.Errorf("get file failed: %v", err)
+		resp.OriginalError = fmt.Errorf("upload file failed: %v", err)
 		resp.DisplayErrorMsg = plugin.MakeTranslator(i18n.ErrUploadFileFailed)
 		return resp
 	}

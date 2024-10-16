@@ -20,6 +20,8 @@
 package recaptcha
 
 import (
+	"embed"
+	"github.com/apache/incubator-answer-plugins/util"
 	"io"
 	"net/http"
 	"time"
@@ -32,13 +34,17 @@ import (
 	"github.com/segmentfault/pacman/log"
 )
 
+//go:embed  info.yaml
+var Info embed.FS
+
 type Captcha struct {
 	Config *CaptchaConfig
 }
 
 type CaptchaConfig struct {
-	SiteKey   string `json:"site_key"`
-	SecretKey string `json:"secret_key"`
+	SiteKey            string `json:"site_key"`
+	SecretKey          string `json:"secret_key"`
+	SiteVerifyEndpoint string `json:"site_verify_endpoint"`
 }
 
 type GoogleCaptchaResponse struct {
@@ -53,13 +59,16 @@ func init() {
 }
 
 func (c *Captcha) Info() plugin.Info {
+	info := &util.Info{}
+	info.GetInfo(Info)
+
 	return plugin.Info{
 		Name:        plugin.MakeTranslator(i18n.InfoName),
-		SlugName:    "google_v2_captcha",
+		SlugName:    info.SlugName,
 		Description: plugin.MakeTranslator(i18n.InfoDescription),
-		Author:      "answerdev",
-		Version:     "1.0.0",
-		Link:        "https://github.com/apache/incubator-answer-plugins/tree/main/captcha-google-v2",
+		Author:      info.Author,
+		Version:     info.Version,
+		Link:        info.Link,
 	}
 }
 
@@ -80,7 +89,11 @@ func (c *Captcha) Verify(captcha, userInput string) (pass bool) {
 	}
 	cli := &http.Client{}
 	cli.Timeout = 10 * time.Second
-	resp, err := cli.PostForm("https://www.google.com/recaptcha/api/siteverify", map[string][]string{
+	siteVerifyEndpoint := c.Config.SiteVerifyEndpoint
+	if siteVerifyEndpoint == "" {
+		siteVerifyEndpoint = "https://www.google.com/recaptcha/api/siteverify"
+	}
+	resp, err := cli.PostForm(siteVerifyEndpoint, map[string][]string{
 		"secret":   {c.Config.SecretKey},
 		"response": {userInput},
 	})
@@ -126,6 +139,17 @@ func (c *Captcha) ConfigFields() []plugin.ConfigField {
 				InputType: plugin.InputTypeText,
 			},
 			Value: c.Config.SecretKey,
+		},
+		{
+			Name:        "site_verify_endpoint",
+			Type:        plugin.ConfigTypeInput,
+			Title:       plugin.MakeTranslator(i18n.ConfigSiteVerifyEndpointTitle),
+			Description: plugin.MakeTranslator(i18n.ConfigSiteVerifyEndpointDescription),
+			Required:    false,
+			UIOptions: plugin.ConfigFieldUIOptions{
+				InputType: plugin.InputTypeText,
+			},
+			Value: c.Config.SiteVerifyEndpoint,
 		},
 	}
 }

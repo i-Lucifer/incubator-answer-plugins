@@ -21,8 +21,11 @@ package redis
 
 import (
 	"context"
+	"embed"
+	_ "embed"
 	"encoding/json"
 	"fmt"
+	"github.com/apache/incubator-answer-plugins/util"
 	"time"
 
 	"github.com/apache/incubator-answer/plugin"
@@ -33,6 +36,8 @@ import (
 
 var (
 	configuredErr = fmt.Errorf("redis is not configured correctly")
+	//go:embed  info.yaml
+	Info embed.FS
 )
 
 type Cache struct {
@@ -53,13 +58,16 @@ func init() {
 }
 
 func (c *Cache) Info() plugin.Info {
+	info := &util.Info{}
+	info.GetInfo(Info)
+
 	return plugin.Info{
 		Name:        plugin.MakeTranslator(i18n.InfoName),
-		SlugName:    "redis_cache",
+		SlugName:    info.SlugName,
 		Description: plugin.MakeTranslator(i18n.InfoDescription),
-		Author:      "answerdev",
-		Version:     "1.2.6",
-		Link:        "https://github.com/apache/incubator-answer-plugins/tree/main/cache-redis",
+		Author:      info.Author,
+		Version:     info.Version,
+		Link:        info.Link,
 	}
 }
 

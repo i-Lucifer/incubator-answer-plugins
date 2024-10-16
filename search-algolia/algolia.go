@@ -21,6 +21,8 @@ package algolia
 
 import (
 	"context"
+	"embed"
+	"github.com/apache/incubator-answer-plugins/util"
 	"strconv"
 	"strings"
 
@@ -29,6 +31,9 @@ import (
 	"github.com/apache/incubator-answer-plugins/search-algolia/i18n"
 	"github.com/apache/incubator-answer/plugin"
 )
+
+//go:embed  info.yaml
+var Info embed.FS
 
 type SearchAlgolia struct {
 	Config *AlgoliaSearchConfig
@@ -42,12 +47,16 @@ func init() {
 }
 
 func (s *SearchAlgolia) Info() plugin.Info {
+	info := &util.Info{}
+	info.GetInfo(Info)
+
 	return plugin.Info{
 		Name:        plugin.MakeTranslator(i18n.InfoName),
-		SlugName:    "algolia-search",
+		SlugName:    info.SlugName,
 		Description: plugin.MakeTranslator(i18n.InfoDescription),
-		Version:     "1.2.5",
-		Author:      "Answer Dev",
+		Version:     info.Version,
+		Author:      info.Author,
+		Link:        info.Link,
 	}
 }
 

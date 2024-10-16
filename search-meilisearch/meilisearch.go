@@ -21,8 +21,10 @@ package meilisearch
 
 import (
 	"context"
+	"embed"
 	"encoding/json"
 	"fmt"
+	"github.com/apache/incubator-answer-plugins/util"
 	"strings"
 	"sync"
 
@@ -32,6 +34,9 @@ import (
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
 )
+
+//go:embed  info.yaml
+var Info embed.FS
 
 const (
 	primaryKey       = "objectID"
@@ -65,13 +70,16 @@ func init() {
 }
 
 func (s *Search) Info() plugin.Info {
+	info := &util.Info{}
+	info.GetInfo(Info)
+
 	return plugin.Info{
 		Name:        plugin.MakeTranslator(i18n.InfoName),
-		SlugName:    "meilisearch_search",
+		SlugName:    info.SlugName,
 		Description: plugin.MakeTranslator(i18n.InfoDescription),
-		Author:      "sivdead",
-		Version:     "1.2.5",
-		Link:        "https://github.com/apache/incubator-answer-plugins/tree/main/search-meilisearch",
+		Author:      info.Author,
+		Version:     info.Version,
+		Link:        info.Link,
 	}
 }
 

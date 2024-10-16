@@ -34,9 +34,19 @@ plugin:
             other: Secret Key
           description:
             other: Get it from https://www.google.com/recaptcha/admin
+        site_verify_endpoint:
+          title:
+            other: Site Verify Endpoint
+          description:
+            other: If you can't access google.com, you can replace it with https://www.recaptcha.net/recaptcha/api/siteverify
     frontend:
       info:
         name:
           other: Google reCAPTCHA v2
         description:
           other: Google reCAPTCHA v2 plugin
+      title: Captcha
+      placeholder: Type the text above
+      msg:
+        empty: Captcha cannot be empty.
+      verify: Verify

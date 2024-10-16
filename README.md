@@ -25,7 +25,8 @@ The Connector plugin helps us to implement third-party login functionality. For 
 
 The Storage plugin helps us to upload files to third-party storage. For example: Aliyun OSS or AWS S3.
 
-- [x] [Aliyun](https://github.com/apache/incubator-answer-plugins/tree/main/storage-aliyunoss)
+- [x] [Aliyun OSS](https://github.com/apache/incubator-answer-plugins/tree/main/storage-aliyunoss)
+- [x] [Tencentyun COS](https://github.com/apache/incubator-answer-plugins/tree/main/storage-tencentyuncos)
 - [x] [S3](https://github.com/apache/incubator-answer-plugins/tree/main/storage-s3)
 
 ### Cache
@@ -53,6 +54,27 @@ Using the third-party user system to manage users. For example: WeCom
 The Notification plugin helps us to send messages to third-party notification systems. For example: Slack.
 
 - [x] [Slack](https://github.com/apache/incubator-answer-plugins/tree/main/notification-slack)
+- [x] [Lark](https://github.com/apache/incubator-answer-plugins/tree/main/notification-lark)
+- [x] [Ding talk](https://github.com/apache/incubator-answer-plugins/tree/main/notification-dingtalk)
+
+### Route
+
+Support for custom routing.
+
+### Editor
+
+Support for extending the markdown editor's toolbar.
+
+- [x] [chart](https://github.com/apache/incubator-answer-plugins/tree/main/editor-chart)
+- [x] [formula](https://github.com/apache/incubator-answer-plugins/tree/main/editor-formula)
+- [x] [embed](https://github.com/apache/incubator-answer-plugins/tree/main/editor-embed)
+
+### Reviewer
+
+Support for customizing the reviewer.
+
+- [x] [default](https://github.com/apache/incubator-answer-plugins/tree/main/reviewer-basic)
+- [x] [akismet](https://github.com/apache/incubator-answer-plugins/tree/main/reviewer-akismet)
 
 ### Filter (coming soon)
 
@@ -64,7 +86,7 @@ The Notification plugin helps us to send messages to third-party notification sy
 
 ## How to build the Answer with your need plugins?
 
-Learn more about the plugin, please visit our [docs](https://answer.apache.org/docs/plugins). 
+Learn more about the plugin, please visit our [docs](https://answer.apache.org/docs/plugins).
 
 ## Build Docker Image with plugins
 Building the Answer docker image with plugins is easy, see [here](https://answer.apache.org/docs/plugins/#build-docker-image-with-plugin-from-answer-base-image).

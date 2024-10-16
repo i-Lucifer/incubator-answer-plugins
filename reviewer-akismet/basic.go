@@ -20,13 +20,18 @@
 package basic
 
 import (
+	"embed"
 	"encoding/json"
+	"github.com/apache/incubator-answer-plugins/util"
 
 	"github.com/apache/incubator-answer-plugins/reviewer-akismet/i18n"
 	"github.com/apache/incubator-answer/plugin"
 	myI18n "github.com/segmentfault/pacman/i18n"
 	"github.com/segmentfault/pacman/log"
 )
+
+//go:embed  info.yaml
+var Info embed.FS
 
 type Reviewer struct {
 	Config *ReviewerConfig
@@ -44,13 +49,16 @@ func init() {
 }
 
 func (r *Reviewer) Info() plugin.Info {
+	info := &util.Info{}
+	info.GetInfo(Info)
+
 	return plugin.Info{
 		Name:        plugin.MakeTranslator(i18n.InfoName),
-		SlugName:    "akismet_reviewer",
+		SlugName:    info.SlugName,
 		Description: plugin.MakeTranslator(i18n.InfoDescription),
-		Author:      "answerdev",
-		Version:     "1.0.0",
-		Link:        "https://github.com/apache/incubator-answer-plugins/tree/main/reviewer-akismet",
+		Author:      info.Author,
+		Version:     info.Version,
+		Link:        info.Link,
 	}
 }
 

@@ -21,8 +21,10 @@ package basic
 
 import (
 	"context"
+	"embed"
 	"encoding/json"
 	"fmt"
+	"github.com/apache/incubator-answer-plugins/util"
 	"io"
 	"regexp"
 	"strings"
@@ -39,6 +41,8 @@ import (
 
 var (
 	replaceUsernameReg = regexp.MustCompile(`[^a-zA-Z0-9._-]+`)
+	//go:embed  info.yaml
+	Info embed.FS
 )
 
 type Connector struct {
@@ -74,13 +78,16 @@ func init() {
 }
 
 func (g *Connector) Info() plugin.Info {
+	info := &util.Info{}
+	info.GetInfo(Info)
+
 	return plugin.Info{
 		Name:        plugin.MakeTranslator(i18n.InfoName),
-		SlugName:    "basic_connector",
+		SlugName:    info.SlugName,
 		Description: plugin.MakeTranslator(i18n.InfoDescription),
-		Author:      "answerdev",
-		Version:     "1.2.5",
-		Link:        "https://github.com/apache/incubator-answer-plugins/tree/main/connector-basic",
+		Author:      info.Author,
+		Version:     info.Version,
+		Link:        info.Link,
 	}
 }
 

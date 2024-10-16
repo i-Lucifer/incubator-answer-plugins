@@ -20,7 +20,9 @@
 package wecom
 
 import (
+	"embed"
 	"fmt"
+	"github.com/apache/incubator-answer-plugins/util"
 	"net/http"
 	"sync"
 	"time"
@@ -31,6 +33,9 @@ import (
 	"github.com/patrickmn/go-cache"
 	"github.com/segmentfault/pacman/log"
 )
+
+//go:embed  info.yaml
+var Info embed.FS
 
 type UserCenter struct {
 	Config          *UserCenterConfig
@@ -99,13 +104,16 @@ func init() {
 }
 
 func (uc *UserCenter) Info() plugin.Info {
+	info := &util.Info{}
+	info.GetInfo(Info)
+
 	return plugin.Info{
 		Name:        plugin.MakeTranslator(i18n.InfoName),
-		SlugName:    "wecom_user_center",
+		SlugName:    info.SlugName,
 		Description: plugin.MakeTranslator(i18n.InfoDescription),
-		Author:      "answerdev",
-		Version:     "1.0.1",
-		Link:        "https://github.com/apache/incubator-answer-plugins/tree/main/user-center-wecom",
+		Author:      info.Author,
+		Version:     info.Version,
+		Link:        info.Link,
 	}
 }
 
